@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-# Banc de base de la Partie 1 : agence et datacenter relies par 3 liens
-(lancer avec sudo)
+# Banc de base de la Partie 1 : agence et datacenter relies par 3 liens (lancer avec sudo)
 set -euo pipefail
 
 ip netns add agence
@@ -21,14 +20,11 @@ for i in 1 2 3; do
     ip -n agence link set a$i up
     ip -n dc link set d$i up
     # netem agit en sortie : on l'applique des deux cotes du lien
-    ip netns exec agence tc qdisc add dev a$i root netem delay ${DELAI[$i]}
-loss ${PERTE[$i]} rate ${DEBIT[$i]}
-    ip netns exec dc tc qdisc add dev d$i root netem delay ${DELAI[$i]}
-loss ${PERTE[$i]} rate ${DEBIT[$i]}
+    ip netns exec agence tc qdisc add dev a$i root netem delay ${DELAI[$i]} loss ${PERTE[$i]} rate ${DEBIT[$i]}
+    ip netns exec dc tc qdisc add dev d$i root netem delay ${DELAI[$i]} loss ${PERTE[$i]} rate ${DEBIT[$i]}
 done
 
 ip -n agence link set lo up
 ip -n dc link set lo up
-ip -n dc addr add 10.99.0.1/32 dev lo # l'application hebergee au
-datacenter
+ip -n dc addr add 10.99.0.1/32 dev lo # l'application hebergee au datacenter
 echo 'Banc pret. Test : sudo ip netns exec agence ping -c 3 10.1.0.2'

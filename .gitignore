@@ -1,0 +1,8 @@
+resultats/
+output/
+*.log
+*.npy
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+.env
